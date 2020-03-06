@@ -1,0 +1,20 @@
+#!/bin/bash
+
+while getopts ':isvb:u:' opt; do
+	case $opt in
+		i) ifconfig | awk '{for(i=1;i<=NF;i++) if ($i=="inet") print $(i+1)}' > /$HOME/.tempDC; netstat -an | grep -f /$HOME/.tempDC | sort; break;;
+		b) iptables -I INPUT -s "$OPTARG" -j DROP; break;;
+		u) iptables -D INPUT -s "$OPTARG" -j DROP; break;;
+		s) iptables -L INPUT -n; break;;
+		v) echo "Version 1.0 - KanuX-14"; break;;
+		\?) echo "
+	Usage:
+	
+	-i: get information from the connection of your computer.
+	-b: ban the IP.
+	-u: unban the IP.
+	-s show: show the banned IPs.
+	-v show: show version of the script and the developer.
+"; break;;
+	esac
+done
